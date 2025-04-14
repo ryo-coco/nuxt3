@@ -7,14 +7,17 @@
     </v-app-bar>
 
     <v-main class="w-4/5 ">
-
       <v-container>
         <v-sheet class="mb-10">
           <v-row>
             <v-col class="d-flex align-center">
               <v-text-field cols="11" variant="outlined" density="comfortable" label="タスク名" v-model="taskName"
                 hide-details></v-text-field>
-              <v-btn cols="1" color="primary" variant="outlined" class="ma-2" @click="addTodo">追加</v-btn>
+              <v-btn cols="1" color="primary" variant="outlined" class="ma-2" @click="addTodo" v-ripple>追加
+                <v-tooltip activator="parent" location="top" open-on-hover>
+                  <span>追加するで～</span>
+                </v-tooltip>
+              </v-btn>
             </v-col>
           </v-row>
         </v-sheet>
@@ -34,16 +37,19 @@
             <v-select variant="outlined" density="comfortable" v-model="item.status" label="status"
               :items="['未着手', '着手中', '完了']" hide-details></v-select>
           </template>
-          <!-- <template v-slot:item.delete="{ item }">
-          <v-btn color="error" hide-details>削除</v-btn>
-        </template> -->
           <template v-slot:item.memo="{ item }">
             <v-textarea variant="outlined" density="comfortable" label="メモ" rows="1" class="w-100"
               hide-details></v-textarea>
           </template>
           <template v-slot:item.delete="{ item }">
             <div class="d-flex ga-2 align-center justify-center">
-              <v-icon color="medium-emphasis" icon="mdi-delete" size="large" @click="remove(item.id)"></v-icon>
+              <v-tooltip location="top" open-on-hover>
+                <template v-slot:activator="{ props }">
+                  <v-icon v-bind="props" color="medium-emphasis" icon="mdi-delete" size="large"
+                    @click="remove(item.id)"></v-icon>
+                </template>
+                <span>削除するで～</span>
+              </v-tooltip>
             </div>
           </template>
         </v-data-table>
@@ -54,6 +60,7 @@
 
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
+import type { DataTableHeader } from 'vuetify'
 
 // const editingId = ref('')
 const editingId = ref<number | null>(null)
@@ -107,7 +114,7 @@ function remove(id: number) {
   items.splice(index, 1)
 }
 
-const headers = [
+const headers: DataTableHeader[] = [
   { title: 'ID', key: 'id', align: 'start' },
   { title: 'タスク名', key: 'taskname' },
   { title: '状態', key: 'status' },
